@@ -81,6 +81,11 @@ var ServiceWorkerType = {
   RESPOND_WITH_FAST: 'RESPOND_WITH_FAST'
 };
 
+var TestsToRun = {
+  CACHE_MISS: 'CACHE_MISS',
+  CACHE_HIT: 'CACHE_HIT'
+}
+
 /**
  * @typedef {{requestType: RequestType,
  *            requestCount: number,
@@ -596,7 +601,7 @@ var startExperiment = function() {
   // Vary number of resources and worker type.
   var trialIndex = 0;
   for (var i = 0; i < counts.length; i++) {
-    for (var type in ServiceWorkerType) {
+    for (var type in TestsToRun) {
       for (var j = 0; j < NUMBER_OF_TRIALS; j++) {
         experiment.push({
           requestType: RequestType.IMAGE,
@@ -619,7 +624,7 @@ var startExperiment = function() {
     // Aggregate data across all trials.
     var metrics = {};
     for (var i = 0; i < counts.length; i++) {
-      for (var type in ServiceWorkerType)
+      for (var type in TestsToRun)
         metrics[type + '_' + counts[i]] = [];
     }
 
@@ -632,7 +637,7 @@ var startExperiment = function() {
 
     // Display the result as a table.
     for (var i = 0; i < counts.length; i++) {
-      for (var type in ServiceWorkerType) {
+      for (var type in TestsToRun) {
         for (var p = 0; p < percentiles.length; p++) {
           var pct = percentiles[p];
           var value = percentile(metrics[type + '_' + counts[i]], pct / 100);
