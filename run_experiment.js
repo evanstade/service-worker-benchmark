@@ -58,7 +58,7 @@ var DEFAULT_PERCENTILES = [50, 90];
 /**
  * Configures the number of times to repeat each trial.
  */
-var NUMBER_OF_TRIALS = 5;
+var NUMBER_OF_TRIALS = 20;
 
 /** @enum {string} */
 var RequestType = {
@@ -82,7 +82,8 @@ var ServiceWorkerType = {
 };
 
 var TestsToRun = {
-  CACHE_MISS: 'CACHE_MISS',
+  NONE: 'NONE',
+ // CACHE_MISS: 'CACHE_MISS',
   CACHE_HIT: 'CACHE_HIT'
 }
 
@@ -375,7 +376,14 @@ var runTrial = function(trial) {
 
     pool.add(function() {
       var start = performance.now();
-      return task().then(function() {
+      return task().then(function(response) {
+/*
+        if (typeof response === 'Response') {
+          var bytes = response.bytes();
+          console.log('read bytes');
+        }else
+          console.log(typeof response);
+*/
         var end = performance.now();
         resourceLoadTimes.push(end - start);
       });
@@ -542,7 +550,7 @@ var runExperiment = function(trials, reportProgress) {
         runTrialInFrame(trials[i]).then(function(trial) {
           results.push(trial);
         }),
-        sleep(trials[i].minimumTime)
+        //sleep(trials[i].minimumTime)
       ]);
     }.bind(null, i));
   }
@@ -647,7 +655,7 @@ var startExperiment = function() {
             'p' + pct + '-' + type.toLowerCase() + '-' + counts[i],
             value);
 
-          if (type != ServiceWorkerType.NONE) {
+          if (type != 'NONE') {
             displayResult(
               'p' + pct + '-rel-' + type.toLowerCase() + '-' + counts[i],
               (value - base) / base, true);
